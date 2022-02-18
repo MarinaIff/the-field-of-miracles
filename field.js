@@ -223,6 +223,7 @@ class Game {
     // Приветствие
     this.#host.sayHi(this.#players);
     this.render();
+    let count = 0;
     while (true) {
       for (let i = 0; i < this.#players.length; i++) {
         const randSpin = this.#spin.getField();
@@ -231,6 +232,11 @@ class Game {
         console.log("choosing letter for " + this.currentPlayer.name);
         const letter = await this.currentPlayer.chooseLetter(availableLetters);
         this.render(randSpin, letter);
+      }
+      console.log(count);
+      count++;
+      if (count % 10 == 0) {
+        this.#host.sayAdvertise();
       }
     }
   }
@@ -263,6 +269,9 @@ class Host {
   sayHi(players) {
     const playersNames = players.map((item) => item.name);
     alert("Hello! " + playersNames.join(", "));
+  }
+  sayAdvertise() {
+    alert("Advertise!");
   }
 }
 

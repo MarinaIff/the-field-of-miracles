@@ -80,8 +80,17 @@ class Player {
 
 class BotPlayer extends Player {
   async chooseLetter(availableLetters) {
-    const idx = Math.floor(Math.random() * availableLetters.length);
-    console.log(availableLetters[idx]);
+    let idx = 0;
+    setTimeout(function () {
+      idx = Math.floor(Math.random() * availableLetters.length);
+      console.log(availableLetters[idx]);
+      getLetter.click();
+    }, 2000);
+    let promise = new Promise((resolve, reject) => {
+      this.resolveChooseLetterPromise = resolve;
+    });
+    idx = await promise;
+
     return availableLetters[idx];
   }
 
@@ -224,13 +233,19 @@ class Game {
     this.#host.sayHi(this.#players);
     this.render();
     let count = 0;
+    let randSpin = 0;
     while (true) {
       for (let i = 0; i < this.#players.length; i++) {
-        const randSpin = this.#spin.getField();
+        randSpin = this.#spin.getField();
         console.log(`Spin: ${randSpin}`);
+        // this.#host.sayPhrases(0);
+        // this.#host.sayPhrases(1);
+
         this.currentPlayer = this.#players[i];
         console.log("choosing letter for " + this.currentPlayer.name);
+        //this.#host.sayPhrases(0);
         const letter = await this.currentPlayer.chooseLetter(availableLetters);
+
         this.render(randSpin, letter);
       }
       console.log(count);
@@ -266,12 +281,26 @@ class Game {
 }
 
 class Host {
+  #showman_phrases = [
+    "Вращайте барабан!",
+    'Сектор "Приз" на барабане!',
+    'Сектор "Плюс" на барабане!',
+    'Сектор "Ключ" на барабане!',
+    "Переход хода!",
+    "Очки удвоены!",
+    "Есть такая буква!",
+    "Такой буквы нет!",
+  ];
+
   sayHi(players) {
     const playersNames = players.map((item) => item.name);
-    alert("Hello! " + playersNames.join(", "));
+    console.log("Hello! " + playersNames.join(", "));
   }
   sayAdvertise() {
-    alert("Advertise!");
+    console.log("Advertise!");
+  }
+  sayPhrases(sector) {
+    alert(this.#showman_phrases[sector]);
   }
 }
 
